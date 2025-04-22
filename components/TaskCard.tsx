@@ -51,8 +51,8 @@ export function TaskCard({ task, user, onEdit, onDelete, onStatusChange }: TaskC
       
       <div class="task-card-meta">
         <div>
-          <div><span>Created: </span>{formatDate(task.createdAt)}</div>
-          <div><span>Updated: </span>{formatDate(task.updatedAt)}</div>
+          <div><span>Created: </span>{formatDate(task.created_at)}</div>
+          <div><span>Updated: </span>{formatDate(task.updated_at)}</div>
         </div>
         <div>
           <div class="task-card-user">

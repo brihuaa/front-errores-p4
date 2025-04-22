@@ -24,6 +24,9 @@ export default function UserManagement() {
 
     try {
       const usersData = await fetchUsers();
+      if (!Array.isArray(usersData)) {
+        throw new Error("Invalid response format: Expected an array of users");
+      }
       users.value = usersData;
     } catch (err) {
       console.error("Failed to load users:", err);

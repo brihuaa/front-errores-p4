@@ -2,7 +2,7 @@ import { useSignal } from "@preact/signals";
 import { useEffect } from "preact/hooks";
 import { TaskColumn } from "../components/TaskColumn.tsx";
 import { Task, TaskStatus } from "../types.ts";
-import { deleteTask, fetchTasks, updateTaskStatus } from "../utils.ts";
+import { deleteTask, fetchTasks, updateTask, updateTaskStatus } from "../utils.ts";
 import TaskForm from "./TaskForm.tsx";
 
 export default function TaskBoard() {
@@ -24,10 +24,13 @@ export default function TaskBoard() {
 
     try {
       const tasksData = await fetchTasks();
+      if (!Array.isArray(tasksData)) {
+        throw new Error("Invalid response format: Expected an array of tasks");
+      }
       tasks.value = tasksData;
     } catch (err) {
-      console.error("Failed to load data:", err);
-      error.value = err instanceof Error ? err.message : "Failed to load data";
+      console.error("Failed to load tasks:", err);
+      error.value = err instanceof Error ? err.message : "Failed to load tasks";
     } finally {
       isLoading.value = false;
     }
@@ -62,14 +65,20 @@ export default function TaskBoard() {
     }
   };
 
-  const handleMoveTask = async (taskId: string) => {
+  const handleMoveTask = async (taskId: string, newStatus: TaskStatus) => {
     try {
+      console.log("Attempting to move task:", { taskId, newStatus });
+
       isLoading.value = true;
       error.value = null;
 
-      const updatedTask = await updateTaskStatus(taskId, {
-        status: TaskStatus.IN_PROGRESS,
-      });
+      const task = tasks.value.find(t => t._id === taskId);
+      if (task?.status === TaskStatus.COMPLETED) {
+        throw new Error("Cannot move a completed task");
+      }
+
+      // Update task status using PUT endpoint
+      const updatedTask = await updateTask(taskId, { status: newStatus });
       tasks.value = tasks.value.map((task) =>
         task._id === updatedTask._id ? updatedTask : task
       );
@@ -145,8 +154,8 @@ export default function TaskBoard() {
           <div class="task-board">
             <TaskColumn
               title="Pending"
-              status={TaskStatus.TODO}
-              tasks={getTasksByStatus(TaskStatus.TODO)}
+              status={TaskStatus.PENDING}
+              tasks={getTasksByStatus(TaskStatus.PENDING)}
               columnClass="pending-column"
               onEditTask={handleEditTask}
               onDeleteTask={handleDeleteTask}
@@ -165,8 +174,8 @@ export default function TaskBoard() {
 
             <TaskColumn
               title="Completed"
-              status={TaskStatus.DONE}
-              tasks={getTasksByStatus(TaskStatus.DONE)}
+              status={TaskStatus.COMPLETED}
+              tasks={getTasksByStatus(TaskStatus.COMPLETED)}
               columnClass="completed-column"
               onEditTask={handleEditTask}
               onDeleteTask={handleDeleteTask}

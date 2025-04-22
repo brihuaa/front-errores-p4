@@ -20,16 +20,16 @@ export function TaskColumn({
   onDeleteTask,
   onMoveTask,
 }: TaskColumnProps) {
-  const getNextStatus = (currentStatus: TaskStatus): TaskStatus => {
+  const getNextStatus = (currentStatus: TaskStatus): TaskStatus | null => {
     switch (currentStatus) {
       case TaskStatus.PENDING:
         return TaskStatus.IN_PROGRESS;
       case TaskStatus.IN_PROGRESS:
         return TaskStatus.COMPLETED;
       case TaskStatus.COMPLETED:
-        return TaskStatus.PENDING;
+        return null; // prevent moving completed tasks
       default:
-        return TaskStatus.PENDING;
+        return null;
     }
   };
 
@@ -37,25 +37,26 @@ export function TaskColumn({
     <div class={`task-column ${columnClass}`}>
       <h2 class="column-header">{title}</h2>
       <div class="task-list">
-        {tasks.length === 0
-          ? (
-            <p class="text-sm text-gray-500 text-center p-4">
-              No tasks in this column
-            </p>
-          )
-          : (
-            tasks.map((task) => (
-              <TaskCard
-                key={task._id}
-                task={task}
-                user={task.user}
-                onEdit={() => onEditTask(task._id)}
-                onDelete={() => onDeleteTask(task._id)}
-                onStatusChange={() =>
-                  onMoveTask(task._id, getNextStatus(task.status))}
-              />
-            ))
-          )}
+        {tasks.length === 0 ? (
+          <p class="text-sm text-gray-500 text-center p-4">
+            No tasks in this column
+          </p>
+        ) : (
+          tasks.map((task) => (
+            <TaskCard
+              key={task._id}
+              task={task}
+              user={task.user}
+              onEdit={() => onEditTask(task._id)}
+              onDelete={() => onDeleteTask(task._id)}
+              onStatusChange={
+                getNextStatus(task.status) 
+                  ? () => onMoveTask(task._id, getNextStatus(task.status)!) // ensure valid status
+                  : undefined // disable move button for completed tasks
+              }
+            />
+          ))
+        )}
       </div>
     </div>
   );

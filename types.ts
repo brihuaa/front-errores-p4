@@ -17,9 +17,9 @@ export interface Task {
 }
 
 export enum TaskStatus {
-  TODO = "todo",
-  IN_PROGRESS = "in_progress",
-  DONE = "done",
+  PENDING = "pending",         // arreglado: changed from "todo"
+  IN_PROGRESS = "in_progress", // arreglado: match API value
+  COMPLETED = "completed"      // arreglado: changed from "done"
 }
 
 export interface CreateUserRequest {

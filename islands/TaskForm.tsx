@@ -30,7 +30,7 @@ export default function TaskForm({
   const formTitle = useSignal<string>(taskToEdit?.title || "");
   const formDescription = useSignal<string>(taskToEdit?.description || "");
   const formStatus = useSignal<TaskStatus>(
-    taskToEdit?.status || TaskStatus.TODO,
+    taskToEdit?.status || TaskStatus.COMPLETED,
   );
   const formUserId = useSignal<string>(taskToEdit?.user?._id || "");
 
@@ -63,10 +63,10 @@ export default function TaskForm({
     e.preventDefault();
 
     const taskData: CreateTaskRequest = {
-      title: formTitle.value,
-      description: formDescription.value || undefined,
+      title: formTitle.value.trim(),
+      description: formDescription.value.trim() || undefined,
       status: formStatus.value,
-      user: formUserId.value,
+      user: formUserId.value.trim(),
     };
 
     const validationError = validateTaskForm(taskData);
@@ -149,9 +149,9 @@ export default function TaskForm({
                 .value as TaskStatus}
             class="form-select"
           >
-            <option value={TaskStatus.TODO}>Todo</option>
+            <option value={TaskStatus.PENDING}>Prending</option>
             <option value={TaskStatus.IN_PROGRESS}>In Progress</option>
-            <option value={TaskStatus.DONE}>Done</option>
+            <option value={TaskStatus.COMPLETED}>Completed</option>
           </select>
         </div>
 

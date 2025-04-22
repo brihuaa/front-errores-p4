@@ -21,11 +21,11 @@ export function UserCard({ user, onEdit, onDelete }: UserCardProps) {
         <div>
           <div>
             <span>Created:</span>
-            {formatDate(user.createdAt)}
+            {formatDate(user.created_at)}
           </div>
           <div>
             <span>Updated:</span>
-            {formatDate(user.updatedAt)}
+            {formatDate(user.updated_at)}
           </div>
         </div>
       </div>

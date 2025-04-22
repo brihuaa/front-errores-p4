@@ -33,8 +33,8 @@ export default function UserForm({
     e.preventDefault();
 
     const userData: CreateUserRequest = {
-      name: formName.value,
-      email: formEmail.value,
+      name: formName.value.trim(),
+      email: formEmail.value.trim(),
     };
 
     const validationError = validateUserForm(userData);
@@ -48,10 +48,7 @@ export default function UserForm({
       error.value = null;
 
       if (editingUserId) {
-        await updateUser(
-          editingUserId,
-          userData as UpdateUserRequest,
-        );
+        await updateUser(editingUserId, userData as UpdateUserRequest);
       } else {
         await createUser(userData);
       }
@@ -87,8 +84,13 @@ export default function UserForm({
             id="name"
             type="text"
             value={formName.value}
-            onInput={(e) =>
-              formName.value = (e.target as HTMLInputElement).value}
+            onInput={(e) => {
+              try {
+                formName.value = (e.target as HTMLInputElement).value;
+              } catch (err) {
+                console.error("Error updating name field:", err);
+              }
+            }}
             class="form-input"
             required
           />
@@ -102,8 +104,13 @@ export default function UserForm({
             id="email"
             type="email"
             value={formEmail.value}
-            onInput={(e) =>
-              formEmail.value = (e.target as HTMLInputElement).value}
+            onInput={(e) => {
+              try {
+                formEmail.value = (e.target as HTMLInputElement).value;
+              } catch (err) {
+                console.error("Error updating email field:", err);
+              }
+            }}
             class="form-input"
             required
           />
