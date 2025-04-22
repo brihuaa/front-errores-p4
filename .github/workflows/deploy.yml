@@ -29,7 +29,7 @@ jobs:
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
         with:
-          project: "adrinbrihue-front-error-72"
+          project: "adrinbrihue-front-error-83"
           entrypoint: "main.ts"
           root: "."
           
