@@ -76,8 +76,6 @@ export default function TaskBoard() {
       if (task?.status === TaskStatus.COMPLETED) {
         throw new Error("Cannot move a completed task");
       }
-
-      // Update task status using PUT endpoint
       const updatedTask = await updateTask(taskId, { status: newStatus });
       tasks.value = tasks.value.map((task) =>
         task._id === updatedTask._id ? updatedTask : task

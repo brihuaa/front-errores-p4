@@ -22,17 +22,17 @@ export async function handleResponse<T>(response: Response): Promise<T> {
 export async function fetchUsers(): Promise<User[]> {
   try {
     const response = await fetch(`${API_URL}/api/users/`);
-    const rawData = await response.json(); // Parse JSON response
+    const rawData = await response.json(); 
     console.log("Raw response from /api/users/:", rawData);
 
     if (!rawData.success || !Array.isArray(rawData.data)) {
       throw new Error("Invalid response format: Expected a success flag and a data array");
     }
 
-    return rawData.data; // Return the users array from the `data` field
+    return rawData.data; 
   } catch (err) {
     console.error("Error fetching users:", err);
-    throw err; // Re-throw the error to be handled by the caller
+    throw err; 
   }
 }
 
@@ -53,12 +53,12 @@ export async function createUser(userData: CreateUserRequest): Promise<User> {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(cleanedData), // arreglado: send cleaned data
+    body: JSON.stringify(cleanedData), // arreglado
   });
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`Failed to create user: ${errorText}`); // arreglado: better error handling
+    throw new Error(`Failed to create user: ${errorText}`); // arreglado
   }
 
   return handleResponse<User>(response);
@@ -88,17 +88,17 @@ export async function deleteUser(id: string): Promise<void> {
 export async function fetchTasks(): Promise<Task[]> {
   try {
     const response = await fetch(`${API_URL}/api/tasks/`);
-    const rawData = await response.json(); // Parse JSON response
+    const rawData = await response.json(); 
     console.log("Raw response from /api/tasks/:", rawData);
 
     if (!rawData.success || !Array.isArray(rawData.data)) {
       throw new Error("Invalid response format: Expected a success flag and a data array");
     }
 
-    return rawData.data; // Return the tasks array from the `data` field
+    return rawData.data; 
   } catch (err) {
     console.error("Error fetching tasks:", err);
-    throw err; // Re-throw the error to be handled by the caller
+    throw err; 
   }
 }
 
@@ -120,12 +120,12 @@ export async function createTask(taskData: CreateTaskRequest): Promise<Task> {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(cleanedData), // arreglado: send cleaned data
+    body: JSON.stringify(cleanedData), // arreglado
   });
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`Failed to create task: ${errorText}`); // arreglado: better error handling
+    throw new Error(`Failed to create task: ${errorText}`); // arreglado
   }
 
   return handleResponse<Task>(response);
@@ -156,46 +156,36 @@ export async function updateTaskStatus(
   id: string,
   status: TaskStatus,
 ): Promise<Task> {
-  try {
-    const endpoint = `${API_URL}/api/tasks/${id}/move`;
-    const payload = { newStatus: status }; // Ensure the key matches the API's expected format
-
-    console.log("Sending request to:", endpoint);
-    console.log("Request payload:", JSON.stringify(payload));
-
-    const response = await fetch(endpoint, {
-      method: "PATCH", // Correct HTTP method
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    const rawData = await response.text(); // Log raw response for debugging
-    console.log("Raw response from /api/tasks/:id/move:", rawData);
-
-    if (!response.ok) {
-      console.error("API error details:", rawData);
-      throw new Error(`API error (${response.status}): ${rawData}`);
-    }
-
-    return JSON.parse(rawData); // Parse and return the updated task
-  } catch (err) {
-    console.error("Error updating task status:", err);
-    throw err; // Re-throw the error to be handled by the caller
+  const endpoint = `${API_URL}/api/tasks/${id}/move`;
+  const payload = { newStatus: status };
+  console.log("Sending request to:", endpoint);
+  console.log("Request payload:", JSON.stringify(payload));
+  const response = await fetch(endpoint, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+  const rawData = await response.text();
+  console.log("Raw response from /api/tasks/:id/move:", rawData);
+  if (!response.ok) {
+    console.error("API error details:", rawData);
+    throw new Error(`API error (${response.status}): ${rawData}`);
   }
+  return JSON.parse(rawData);
 }
 
 export async function moveTask(
-  taskId: string,  // arreglado: renamed for clarity
-  newUserId: string, // arreglado: renamed for clarity
+  taskId: string,
+  newUserId: string,
 ): Promise<Task> {
   const response = await fetch(`${API_URL}/api/tasks/${taskId}/move`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ userId: newUserId }), // arreglado: match API expectation
+    body: JSON.stringify({ userId: newUserId }),
   });
   return handleResponse<Task>(response);
 }

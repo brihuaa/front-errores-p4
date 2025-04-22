@@ -27,7 +27,7 @@ export function TaskColumn({
       case TaskStatus.IN_PROGRESS:
         return TaskStatus.COMPLETED;
       case TaskStatus.COMPLETED:
-        return null; // prevent moving completed tasks
+        return null; 
       default:
         return null;
     }
@@ -51,8 +51,8 @@ export function TaskColumn({
               onDelete={() => onDeleteTask(task._id)}
               onStatusChange={
                 getNextStatus(task.status) 
-                  ? () => onMoveTask(task._id, getNextStatus(task.status)!) // ensure valid status
-                  : undefined // disable move button for completed tasks
+                  ? () => onMoveTask(task._id, getNextStatus(task.status)!) 
+                  : undefined 
               }
             />
           ))
